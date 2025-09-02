@@ -15,8 +15,18 @@ let addButton = document.getElementById("add-button");
 let tabs = document.querySelectorAll(".task-tabs div");
 let underLine = document.getElementById("under-line");
 let taskList = [];
-let mode = 'all';
 let filterList = [];
+let mode = 'all';
+let deleteTargetId = null;  // 삭제할 id를 잠시 저장하는 변수
+
+function addTask () {
+  const taskText = task-input.value.trim(); // 입력값 가져오기
+
+  if (taskText === "") {
+    alert("내용을 입력해주세요!");
+    return;
+  }
+}
 
 addButton.addEventListener("click", addTask);
 
@@ -94,14 +104,27 @@ function toggleComplete(id) {
 }
 
 function deleteTask(id) {
-  for(let i=0; i<taskList.length; i++) {
-    if (taskList[i].id == id) {
-      taskList.splice(i,1)
-      break;
-    } 
-  }
-  filter();
+  deleteTargetId = id; // 어떤 task를 지울지 저장
+  document.getElementById("myModal").style.display = "block"; // 모달 열기
 }
+
+// 모달 버튼 이벤트 연결
+document.getElementById("confirmBtn").onclick = function() {
+  for (let i = 0; i < taskList.length; i++) {
+    if (taskList[i].id == deleteTargetId) {
+      taskList.splice(i, 1); // 진짜 삭제 실행
+      break;
+    }
+  }
+  document.getElementById("myModal").style.display = "none"; // 모달 닫기
+  filter(); // 삭제 후 리스트 갱신
+};
+
+document.getElementById("cancelBtn").onclick = function() {
+  document.getElementById("myModal").style.display = "none"; // 모달만 닫기
+  deleteTargetId = null; // 초기화
+};
+
 
 function filter(e) {
   if (e) {
